@@ -10,14 +10,16 @@ def upload_pdf():
     print("Upload a PDF file")
     # Functionality
 
+
 # Function to extract text from a PDF file
 def extract_pdf_text(pdf_file):
     # Extract text from a PDF file using pdfminer
     text = pdfminer_extract_text(pdf_file)
     return text
 
+
 def main(): 
-    text = extract_pdf_text("ReservationConfirmationFr1.pdf")
+    text = extract_pdf_text("ResConfirmFr1.pdf")
     print(text)
     return
 
