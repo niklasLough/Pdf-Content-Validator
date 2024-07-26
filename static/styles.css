@@ -1,0 +1,51 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #70cbf4;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+header img {
+    max-height: 80px; /* Adjust the max height as needed */
+    width: auto;
+    height: auto;
+    margin-right: 20px; /* Space between the image and the text */
+}
+
+header div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+}
+
+h1 {
+    font-size: 2.5em; /* Increased header size */
+    margin: 0; /* Remove default margin */
+}
+
+h3 {
+    margin: 0; /* Remove default margin */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+input[type="file"], input[type="submit"] {
+    font-size: 1.2em; /* Increased size of the buttons */
+    padding: 10px;
+    margin: 10px;
+}
