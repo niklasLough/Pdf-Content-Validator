@@ -16,4 +16,8 @@ def extract_pdf_text(pdf_file):
 def validate_pdf(file_path):
     text = extract_pdf_text(file_path)
     print(text)
-    return
+    return text 
+    # Here we will return the relevant information about the validity of the inputs
+    # Will have to put in more arguments later, such as the key values they are looking for
+    # The prompt for this will appear after the user has uploaded a file
+

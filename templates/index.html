@@ -11,17 +11,21 @@
     <header>
         <img src="{{ url_for('static', filename='Tui-logo.png') }}" alt="Tui logo">
         <div>
-            <h1>TUI File Validator App</h1>
+            <h1>File Validator App</h1>
             <h3>Upload your PDF file to then validate the content</h3>
         </div>
     </header>
     <form method='POST' enctype='multipart/form-data'>
-        {{ form.hidden_tag() }}
-        {{ form.pdf() }}
-        {{ form.submit() }}
+        {{ upload_form.hidden_tag() }}
+        {{ upload_form.pdf() }}
+        {{ upload_form.submit() }}
     </form>
     {% if success %}
     <p>File uploaded successfully!</p>
+    {% endif %}
+
+    {% if error %}
+    <p class="error-message">File uploaded unsuccessfully!</p>
     {% endif %}
 </body>
 </html>
