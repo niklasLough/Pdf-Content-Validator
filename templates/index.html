@@ -21,11 +21,19 @@
         {{ upload_form.submit() }}
     </form>
     {% if success %}
-    <p>File uploaded successfully!</p>
+        <p>File uploaded successfully!</p>
+        <form method='POST'>
+            {{ input_form.hidden_tag() }}
+            {{ input_form.keyword.label }}
+            {{ input_form.keyword() }}
+            {{ input_form.submit() }}
+        </form>
+    {% elif success is not none %}
+        <p class="error-message">File uploaded unsuccessfully</p>
     {% endif %}
 
-    {% if error %}
-    <p class="error-message">File uploaded unsuccessfully!</p>
+    {% if data_submitted %}
+    <p>Data submitted successfully!</p>
     {% endif %}
 </body>
 </html>

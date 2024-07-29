@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, session
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField, StringField
 from werkzeug.utils import secure_filename
-import os 
+import os
 from wtforms.validators import InputRequired
 
 from configApp import Config
@@ -15,8 +15,14 @@ class UploadFileFlaskForm(FlaskForm):
     pdf = FileField("Choose File", validators=[InputRequired()])
     submit = SubmitField("Upload File")
 
+class InputDataFlaskForm(FlaskForm):
+    """
+    Class to create a FlaskForm for inputting data
+    """
+    keyword = StringField("Keyword", validators=[InputRequired()])
+    submit = SubmitField("Submit")
 
-def app():
+def create_app():
     """
     Function to create the Flask app
     
@@ -24,35 +30,42 @@ def app():
     app: Flask
     """
 
-    # Create the Flask app
     app = Flask(__name__)
     app.config.from_object(Config)
     Config.initialise_app(app)
 
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/home', methods=['GET', 'POST'])
-
-    # Function to render the home page
     def home():
         upload_form = UploadFileFlaskForm()
+        input_form = InputDataFlaskForm()
 
+        # If a file is uploaded
         if upload_form.validate_on_submit():
             pdf = upload_form.pdf.data
-            file_name = secure_filename(pdf.filename) # Secure the filename to be then saved
-            
+            file_name = secure_filename(pdf.filename)
             try:
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
-                pdf.save(file_path) # Save the PDF file to the upload folder
+                pdf.save(file_path)
 
-                text = validate_pdf(file_path)
+                # Save the file path in a session to use across different requests
+                session['file_path'] = file_path
 
-                return redirect(url_for('home', success=True)) # Redirect to the home route
+                return redirect(url_for('home', success=True))
             except Exception as e:
-                return redirect(url_for('home', error=True))
+                return str(e)
         
-        return render_template("index.html", upload_form=upload_form, success=request.args.get('success'), error=request.args.get('error'))
+        # If input data is submitted
+        if input_form.validate_on_submit():
+            keyword = input_form.keyword.data
+            pdf_file_path = session.get('file_path')
+            validate_pdf(pdf_file_path, keyword)
+            return redirect(url_for('home', success=request.args.get('success'), data_submitted=True))
+
+        return render_template("index.html", upload_form=upload_form, input_form=input_form, success=request.args.get('success'), data_submitted=request.args.get('data_submitted'))
 
     app.run(debug=True)
+    return app
 
 if __name__ == "__main__":
-    app()
+    create_app()

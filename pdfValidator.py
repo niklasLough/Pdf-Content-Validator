@@ -13,9 +13,11 @@ def extract_pdf_text(pdf_file):
     return text
 
 
-def validate_pdf(file_path):
+def validate_pdf(file_path, keyword):
     text = extract_pdf_text(file_path)
     print(text)
+    print(keyword)
+    print("Hello from pdfValidator.py")
     return text 
     # Here we will return the relevant information about the validity of the inputs
     # Will have to put in more arguments later, such as the key values they are looking for
