@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -46,30 +46,34 @@ header {
     justify-content: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-bottom: 5px solid #575757; /* Add border at the bottom of the header */
+    position: relative;
+    text-align: center;
 }
 
 header img {
     max-height: 80px; /* Adjust the max height as needed */
     width: auto;
     height: auto;
-    margin-right: 20px; /* Space between the image and the text */
+    position: absolute;
+    left: 20px; /* Position the logo to the left side */
 }
 
-.header-text {
+header div {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
 }
 
 h1 {
     font-size: 2.5em; /* Increased header size */
     margin: 0; /* Remove default margin */
+    font-weight: 700; /* Make the header bold */
 }
 
 h3 {
     margin: 0; /* Remove default margin */
+    font-weight: 400; /* Normal font weight for subheading */
 }
 
 main {
@@ -82,19 +86,29 @@ main {
     border: 1px solid #ddd; /* Border around the main content */
 }
 
-main p, main ol {
+main p {
     font-size: 1.2em;
     line-height: 1.6em;
     margin-bottom: 20px;
-    text-align: center; /* Center the text */
+    text-align: justify; /* Justify text for better readability */
 }
 
 main ol {
-    padding-left: 20px;
+    padding-left: 40px; /* Indent the ordered list */
 }
 
 main ol li {
     margin-bottom: 10px;
+    font-size: 1.1em; /* Slightly smaller than paragraphs */
+    line-height: 1.5em;
+}
+
+.main-highlight {
+    background-color: #e7f3fe; /* Light blue background for highlighting */
+    padding: 10px;
+    border-left: 5px solid #70cbf4; /* Highlight border */
+    margin-bottom: 20px;
+    border-radius: 4px; /* Rounded corners */
 }
 
 form {
@@ -105,17 +119,48 @@ form {
 }
 
 input[type="file"], input[type="submit"] {
-    font-size: 1.2em; /* Increased size of the buttons */
-    padding: 10px;
+    font-size: 1.5em; /* Increased size of the buttons */
+    padding: 15px 20px; /* Increased padding for the buttons */
     margin: 10px;
+    border: 2px solid #70cbf4; /* Add border to buttons */
+    border-radius: 8px; /* Add rounded corners */
+    background-color: #70cbf4; /* Button background color */
+    color: #fff; /* Button text color */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effect */
+}
+
+input[type="file"]:hover, input[type="submit"]:hover {
+    background-color: #575757; /* Change background color on hover */
+    transform: scale(1.05); /* Slightly increase size on hover */
+}
+
+input[type="file"]:active, input[type="submit"]:active {
+    background-color: #333; /* Change background color on active */
+    transform: scale(1); /* Reset size on active */
+}
+
+input[type="text"], input[type="number"] {
+    font-size: 1.2em; /* Increase font size */
+    padding: 10px; /* Add padding */
+    margin: 10px 0; /* Add margin */
+    border: 2px solid #70cbf4; /* Add border */
+    border-radius: 8px; /* Add rounded corners */
+    width: 100%; /* Make input field full width */
+    max-width: 400px; /* Set a max width for the input fields */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+p {
+    text-align: center; 
 }
 
 .success-message {
     color: green;
-    text-align: center;
+    text-align: center; 
 }
 
 .error-message {
     color: red;
-    text-align: center;
+    text-align: center; 
 }

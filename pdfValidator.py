@@ -15,13 +15,12 @@ def extract_pdf_text(pdf_file):
 
 def validate_pdf(file_path, keyword, value):
     pdf_text = extract_pdf_text(file_path)
-    print(pdf_text)
-    print(keyword)
-    print(value)
-    print("Hello from pdfValidator.py")
+    # print(pdf_text)
+    # print(keyword)
+    # print(value)
+    # print("Hello from pdfValidator.py")
 
     # Check if the keyword and value are present in the PDF text
-
     keyword_found = False
     value_found = False
     myList = re.split('\n', pdf_text)
