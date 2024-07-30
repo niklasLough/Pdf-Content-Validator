@@ -20,7 +20,8 @@ class InputDataFlaskForm(FlaskForm):
     Class to create a FlaskForm for inputting data
     """
     keyword = StringField("Keyword", validators=[InputRequired()])
-    submit = SubmitField("Submit")
+    value = StringField("Value", validators=[InputRequired()])
+    submit = SubmitField("Submit Input")
 
 def create_app():
     """
@@ -57,12 +58,20 @@ def create_app():
         
         # If input data is submitted
         if input_form.validate_on_submit():
+            # Get the user input
             keyword = input_form.keyword.data
+            value = input_form.value.data
+
+            # Get the file path from the session
             pdf_file_path = session.get('file_path')
-            validate_pdf(pdf_file_path, keyword)
+            validate_pdf(pdf_file_path, keyword, value)
             return redirect(url_for('home', success=request.args.get('success'), data_submitted=True))
 
         return render_template("index.html", upload_form=upload_form, input_form=input_form, success=request.args.get('success'), data_submitted=request.args.get('data_submitted'))
+
+    @app.route('/help')
+    def help():
+        return render_template("help.html")
 
     app.run(debug=True)
     return app

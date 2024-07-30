@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('help') }}">Help</a></li>
+        </ul>
+    </nav>
     <header>
         <img src="{{ url_for('static', filename='Tui-logo.png') }}" alt="Tui logo">
         <div>
@@ -15,17 +21,21 @@
             <h3>Upload your PDF file to then validate the content</h3>
         </div>
     </header>
+
+    <main>
     <form method='POST' enctype='multipart/form-data'>
         {{ upload_form.hidden_tag() }}
         {{ upload_form.pdf() }}
         {{ upload_form.submit() }}
     </form>
     {% if success %}
-        <p>File uploaded successfully!</p>
+        <p class="success-message">File uploaded successfully!</p>
         <form method='POST'>
             {{ input_form.hidden_tag() }}
             {{ input_form.keyword.label }}
             {{ input_form.keyword() }}
+            {{ input_form.value.label }}
+            {{ input_form.value() }}
             {{ input_form.submit() }}
         </form>
     {% elif success is not none %}
@@ -33,7 +43,8 @@
     {% endif %}
 
     {% if data_submitted %}
-    <p>Data submitted successfully!</p>
+    <p class="success-message">Data submitted successfully!</p>
     {% endif %}
+</main>
 </body>
 </html>

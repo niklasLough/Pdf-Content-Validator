@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('help') }}">Help</a></li>
+        </ul>
+    </nav>
+    <header>
+        <img src="{{ url_for('static', filename='Tui-logo.png') }}" alt="Tui logo">
+        <div>
+            <h1>File Validator Help Page</h1>
+            <h3>Details on how to use the app</h3>
+        </div>
+    </header>
+    <main>
+        <p>Welcome to the help page for the TUI PDF Validator App.</p> 
+        <p>This app validates the presence of specific elements within a PDF file. 
+        The application checks if a given string (e.g., "Gesamtpreis") and a corresponding value (e.g., 4.1300,00€) appear on the same line within the PDF.</p>
+        <p>Here are the steps to use the app:</p>
+        <ol>
+            <li>Upload a PDF file using the form on the home page.</li>
+            <li>Enter the keyword and value you want to validate.</li>
+            <li>Click the submit button.</li>
+            <li>See the results as to if the inputs appear on the same line.</li>
+        </ol>
+    </main>
+</body>
+</html>

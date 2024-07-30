@@ -13,13 +13,25 @@ def extract_pdf_text(pdf_file):
     return text
 
 
-def validate_pdf(file_path, keyword):
-    text = extract_pdf_text(file_path)
-    print(text)
+def validate_pdf(file_path, keyword, value):
+    pdf_text = extract_pdf_text(file_path)
+    print(pdf_text)
     print(keyword)
+    print(value)
     print("Hello from pdfValidator.py")
-    return text 
-    # Here we will return the relevant information about the validity of the inputs
-    # Will have to put in more arguments later, such as the key values they are looking for
-    # The prompt for this will appear after the user has uploaded a file
+
+    # Check if the keyword and value are present in the PDF text
+
+    keyword_found = False
+    value_found = False
+    myList = re.split('\n', pdf_text)
+    print(myList)
+    for line in myList:
+        for word in line.split():
+            if keyword.lower() == word.lower():
+                keyword_found = True 
+            if value.lower() == word.lower():
+                value_found = True
+    if keyword_found and value_found:
+        print("The keyword and value are present in the PDF file")
 
