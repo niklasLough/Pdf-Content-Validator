@@ -43,15 +43,15 @@
     {% endif %}
 
     {% if validated %}
-        <p class="success-message">Data submitted successfully!</p>
-        <p class="success-message">Results:</p>
-        <p>Validation passed successfully!</p>
+        <!-- <p class="success-message">Data submitted successfully!</p> -->
+        <p class="validated">Validation passed!</p>
         <p>{{ found }}</p>
     {% endif %}
 
     {% if failed %}
+        <!-- <p class="success-message">Data submitted successfully!</p> -->
         <p class="error-message">Validation failed!</p>
-        <!-- <p>{{ results }}</p> -->
+        <!-- <p>{{ found }}</p> -->
     {% endif %}
 </main>
 </body>
