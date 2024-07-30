@@ -64,10 +64,17 @@ def create_app():
 
             # Get the file path from the session
             pdf_file_path = session.get('file_path')
-            validate_pdf(pdf_file_path, keyword, value)
-            return redirect(url_for('home', success=request.args.get('success'), data_submitted=True))
-
-        return render_template("index.html", upload_form=upload_form, input_form=input_form, success=request.args.get('success'), data_submitted=request.args.get('data_submitted'))
+            found = False
+            found = validate_pdf(pdf_file_path, keyword, value)
+            session['found'] = found
+            if found:
+                print("yayyy")
+                return redirect(url_for('home', success=True, validated=True))
+            else:
+                print("noooo")
+                return redirect(url_for('home', success=True, failed=True))
+        found = session.get('found')
+        return render_template("index.html", upload_form=upload_form, input_form=input_form, success=request.args.get('success'), data_submitted=request.args.get('data_submitted'), validated=request.args.get('validated'), failed=request.args.get('failed'), found=found)
 
     @app.route('/help')
     def help():

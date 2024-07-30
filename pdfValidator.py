@@ -33,4 +33,6 @@ def validate_pdf(file_path, keyword, value):
                 value_found = True
     if keyword_found and value_found:
         print("The keyword and value are present in the PDF file")
+        return True
+    
 
