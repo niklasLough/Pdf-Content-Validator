@@ -4,16 +4,25 @@
 import re
 import PyPDF2 # For splitting, merging, cropping, and transforming the pages of PDF files
 from pdfminer.high_level import extract_pages, extract_text # For extracting information from PDF documents
-import tabula
-#NEED A WAY TO EXTRACT THE DATA AS TABLES!!!
+import tabula # For extracting tables from PDF files
 
 
 def test_extract_pdf_text(pdf_file):
-    for page_layout in extract_pages(pdf_file):
-        for element in page_layout:
-            print(element)
-    
+    # Extract text using pdfminer
     text = extract_text(pdf_file)
+
+    table_text = tabula.read_pdf(pdf_file, pages='all', multiple_tables=True)
+
+    text += table_text
+    
+    # with pdfplumber.open(pdf_file) as pdf:
+    #     # Iterate through pages
+    #     for page_number, page in enumerate(pdf.pages):
+    #         # Extract tables
+    #         tables = page.extract_tables()
+    #         for table in tables:
+    #             for row in table:
+    #                 print(row)
     return text
 
 # Function to extract text from a PDF file
@@ -26,24 +35,15 @@ def extract_pdf_text(pdf_file):
 
 def validate_pdf(file_path, keyword, value):
     pdf_text = extract_pdf_text(file_path)
-    # print(pdf_text)
-    # print(keyword)
-    # print(value)
-    # print("Hello from pdfValidator.py")
-
-    # Check if the keyword and value are present in the PDF text
-    keyword_found = False
-    value_found = False
-    myList = re.split('\n', pdf_text)
-    # print(myList)
-    for line in myList:
-        for word in line.split():
-            if keyword.lower() == word.lower():
-                keyword_found = True 
-            if value.lower() == word.lower():
-                value_found = True
-    if keyword_found and value_found:
-        # print("The keyword and value are present in the PDF file")
-        return True
+    
+    # Convert to lowercase so search isn't case sensitive
+    pdf_text_lower = pdf_text.lower()
+    keyword_lower = keyword.lower()
+    value_lower = value.lower()
+    
+    keyword_found = keyword_lower in pdf_text_lower
+    value_found = value_lower in pdf_text_lower
+    
+    return keyword_found and value_found
     
 
