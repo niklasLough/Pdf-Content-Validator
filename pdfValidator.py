@@ -54,7 +54,7 @@ def validate_price(pdf_list):
 def validate_pdf(file_path, keyword, value):
     pdf_list = extract_pdf_text(file_path)
     # If the PDF is a booking confirmation then validate price sum
-    price_validated = False
+    price_validated = False #TODO Try if its None
     if "Confirmation" in pdf_list[0] or "Buchungsbestätigung" in pdf_list[0]:
         price_validated = validate_price(pdf_list)
 

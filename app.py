@@ -7,6 +7,7 @@ from wtforms.validators import InputRequired
 
 from configApp import Config
 from pdfValidator import validate_pdf
+from highlighPdf import highlight_pdf
 
 class UploadFileFlaskForm(FlaskForm):
     """
@@ -66,6 +67,10 @@ def create_app():
             pdf_file_path = session.get('file_path')
             found = False
             found, price_valid = validate_pdf(pdf_file_path, keyword, value)
+            # if found:
+            #     new_file_path = highlight_pdf(pdf_file_path, keyword, value)
+            #     session['file_path'] = new_file_path
+
             session['found'] = found
             session['price_valid'] = price_valid
             if found and price_valid:
@@ -76,10 +81,10 @@ def create_app():
                 return redirect(url_for('home', success=True, validated=True))
             elif price_valid:
                 print("price_valid")
-                return redirect(url_for('home', success=True, price_valid=True))
+                return redirect(url_for('home', success=True, not_validated = True, price_valid=True))
             else:
                 print("noooo")
-                return redirect(url_for('home', success=True, failed=True))
+                return redirect(url_for('home', success=True, not_validated = True, price_invalid=True))
         
 
         # found = session.get('found')
@@ -91,7 +96,8 @@ def create_app():
                             success=request.args.get('success'),
                             data_submitted=request.args.get('data_submitted'),
                             validated=request.args.get('validated'), 
-                            failed=request.args.get('failed'), 
+                            not_validated=request.args.get('not_validated'),
+                            price_invalid=request.args.get('price_invalid'), 
                             price_valid=request.args.get('price_valid'),
                             pdf_file_path=pdf_file_path)
 

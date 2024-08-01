@@ -47,12 +47,18 @@
         <iframe src="{{ pdf_file_path }}"></iframe>
     {% endif %}
 
+    {% if not_validated %}
+        <p class="error-message">Validation failed! <br> The keyword and value are not on the same line!</p>
+        <iframe src="{{ pdf_file_path }}"></iframe>
+    {% endif %}
+
+
     {% if price_valid %}
         <p class="validated">Validation passed! <br> The price on the confirmation form is valid!</p>
     {% endif %}
 
-    {% if failed %}
-        <p class="error-message">Validation failed!</p>
+    {% if price_invalid %}
+        <p class="error-message">Validation failed! <br> The price on the confirmation form is not valid!</p>
     {% endif %}
 </main>
 </body>
