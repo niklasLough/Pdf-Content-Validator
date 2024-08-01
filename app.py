@@ -65,16 +65,35 @@ def create_app():
             # Get the file path from the session
             pdf_file_path = session.get('file_path')
             found = False
-            found = validate_pdf(pdf_file_path, keyword, value)
+            found, price_valid = validate_pdf(pdf_file_path, keyword, value)
             session['found'] = found
-            if found:
-                print("yayyy")
+            session['price_valid'] = price_valid
+            if found and price_valid:
+                print("found and price_valid")
+                return redirect(url_for('home', success=True, validated=True, price_valid=True))
+            elif found:
+                print("found")
                 return redirect(url_for('home', success=True, validated=True))
+            elif price_valid:
+                print("price_valid")
+                return redirect(url_for('home', success=True, price_valid=True))
             else:
                 print("noooo")
                 return redirect(url_for('home', success=True, failed=True))
-        found = session.get('found')
-        return render_template("index.html", upload_form=upload_form, input_form=input_form, success=request.args.get('success'), data_submitted=request.args.get('data_submitted'), validated=request.args.get('validated'), failed=request.args.get('failed'), found=found)
+        
+
+        # found = session.get('found')
+        # price_valid = session.get('price_valid')
+        pdf_file_path = session.get('file_path')
+        return render_template("index.html", 
+                            upload_form=upload_form, 
+                            input_form=input_form, 
+                            success=request.args.get('success'),
+                            data_submitted=request.args.get('data_submitted'),
+                            validated=request.args.get('validated'), 
+                            failed=request.args.get('failed'), 
+                            price_valid=request.args.get('price_valid'),
+                            pdf_file_path=pdf_file_path)
 
     @app.route('/help')
     def help():

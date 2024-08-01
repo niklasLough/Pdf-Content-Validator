@@ -43,16 +43,16 @@
     {% endif %}
 
     {% if validated %}
-        <!-- <p class="success-message">Data submitted successfully!</p> -->
-        <p class="validated">Validation passed!</p>
-        <p class="validated">The keyword and value are on the same line!</p>
-        <p>{{ found }}</p>
+        <p class="validated">Validation passed! <br> The keyword and value are on the same line!</p>
+        <iframe src="{{ pdf_file_path }}"></iframe>
+    {% endif %}
+
+    {% if price_valid %}
+        <p class="validated">Validation passed! <br> The price on the confirmation form is valid!</p>
     {% endif %}
 
     {% if failed %}
-        <!-- <p class="success-message">Data submitted successfully!</p> -->
         <p class="error-message">Validation failed!</p>
-        <!-- <p>{{ found }}</p> -->
     {% endif %}
 </main>
 </body>
