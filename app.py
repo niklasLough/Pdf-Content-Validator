@@ -76,15 +76,21 @@ def create_app():
             if found and price_valid:
                 print("found and price_valid")
                 return redirect(url_for('home', success=True, validated=True, price_valid=True))
-            elif found:
+            elif found and price_valid is None:
                 print("found")
                 return redirect(url_for('home', success=True, validated=True))
-            elif price_valid:
+            elif not found and price_valid is None:
+                print("not found")
+                return redirect(url_for('home', success=True, not_validated=True))
+            elif found and price_valid is False:
+                print("found and price_invalid")
+                return redirect(url_for('home', success=True, validated=True, price_invalid=True))
+            elif not found and price_valid:
                 print("price_valid")
-                return redirect(url_for('home', success=True, not_validated = True, price_valid=True))
+                return redirect(url_for('home', success=True, not_validated=True, price_valid=True))
             else:
                 print("noooo")
-                return redirect(url_for('home', success=True, not_validated = True, price_invalid=True))
+                return redirect(url_for('home', success=True, not_validated=True, price_invalid=True))
         
 
         # found = session.get('found')

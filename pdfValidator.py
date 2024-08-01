@@ -54,7 +54,7 @@ def validate_price(pdf_list):
 def validate_pdf(file_path, keyword, value):
     pdf_list = extract_pdf_text(file_path)
     # If the PDF is a booking confirmation then validate price sum
-    price_validated = False #TODO Try if its None
+    price_validated = None #TODO Try if its None
     if "Confirmation" in pdf_list[0] or "Buchungsbestätigung" in pdf_list[0]:
         price_validated = validate_price(pdf_list)
 
@@ -64,15 +64,17 @@ def validate_pdf(file_path, keyword, value):
         if keyword.lower() in line.lower() and value.lower() in line.lower():
             found = True
             break
+
+    return found, price_validated
     
-    # Return the correct results to the app
-    if price_validated and found:
-        return True, True
-    elif found:
-        return True, False
-    elif price_validated:
-        return False, True
-    return False, False
+    # # Return the correct results to the app
+    # if found and price_validated:
+    #     return True, True
+    # elif found:
+    #     return True, False
+    # elif price_validated:
+    #     return False, True
+    # return False, False
 
     
 
