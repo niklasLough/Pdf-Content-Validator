@@ -5,9 +5,9 @@ from werkzeug.utils import secure_filename
 import os
 from wtforms.validators import InputRequired
 
-from configApp import Config
-from pdfValidator import validate_pdf
-from highlighPdf import highlight_pdf
+from config_app import Config
+from pdf_validator import validate_pdf
+from highlight_pdf import highlight_pdf
 
 
 class UploadFileFlaskForm(FlaskForm):
