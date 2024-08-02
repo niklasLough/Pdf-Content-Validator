@@ -17,7 +17,7 @@
     <header>
         <img src="{{ url_for('static', filename='Tui-logo.png') }}" alt="Tui logo">
         <div>
-            <h1>File Validator App</h1>
+            <h1>PDF Validator App</h1>
             <h3>Upload your PDF file to then validate the content</h3>
         </div>
     </header>
@@ -60,6 +60,10 @@
     {% if price_invalid %}
         <p class="error-message">Validation failed! <br> The price on the confirmation form is not valid!</p>
     {% endif %}
+
+    {% if not_pdf %}
+        <p class="error-message">Incorrect File Input! <br> You can only upload PDF files!</p>
+    {% endif %}   
 </main>
 </body>
 </html>
