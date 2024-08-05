@@ -22,7 +22,7 @@
 - Werkzeug
 - PyPDF2 (or another PDF manipulation library)
 - PDFPlumber
-- PyMuPDF
+- PyMuPDF (Fitz)
 
 ### Installation
 1. Clone the Repository
