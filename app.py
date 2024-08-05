@@ -10,11 +10,11 @@ from pdf_validator import validate_pdf
 from highlight_pdf import highlight_pdf
 
 
-class UploadFileFlaskForm(FlaskForm):
+class UploadPdfFlaskForm(FlaskForm):
     """
     Class to create a FlaskForm for uploading a PDF file
     """
-    pdf = FileField("Choose File", validators=[InputRequired()])
+    pdf = FileField("Choose PDF File", validators=[InputRequired()])
     submit = SubmitField("Upload File")
 
 
@@ -25,6 +25,15 @@ class InputDataFlaskForm(FlaskForm):
     keyword = StringField("Keyword", validators=[InputRequired()])
     value = StringField("Value", validators=[InputRequired()])
     submit = SubmitField("Submit Input")
+
+
+class UploadCsvFlaskForm(FlaskForm):
+    """
+    Class to create a FlaskForm for uploading a CSV file
+    """
+    csv = FileField("Choose CSV File", validators=[InputRequired()])
+    submit = SubmitField("Upload File")
+
 
 def create_app():
     """
@@ -57,7 +66,7 @@ def create_app():
             return str(e)
 
 
-    def handle_input(input_form):
+    def handle_pdf_input(input_form):
         # Get the user input
         keyword = input_form.keyword.data
         value = input_form.value.data
@@ -95,8 +104,9 @@ def create_app():
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/home', methods=['GET', 'POST'])
     def home():
-        upload_form = UploadFileFlaskForm()
+        upload_form = UploadPdfFlaskForm()
         input_form = InputDataFlaskForm()
+        csv_form = UploadCsvFlaskForm()
 
         # If a file is uploaded
         if upload_form.validate_on_submit():
@@ -104,10 +114,12 @@ def create_app():
         
         # If input data is submitted
         if input_form.validate_on_submit():
-            return handle_input(input_form)
+            return handle_pdf_input(input_form)
         
-        # found = session.get('found')
-        # price_valid = session.get('price_valid')
+        # if csv_form.validate_on_submit():
+        #     return #TODO
+        
+        
         pdf_file_path = session.get('file_path')
         return render_template("index.html", 
                             upload_form=upload_form, 
