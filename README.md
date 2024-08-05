@@ -2,6 +2,7 @@
 
 ## A Python web application wriiten using Flask that allows users to upload PDF files, input data, and validate the content of the PDF against the provided inputs.
 
+https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python&logoColor=blue
 
 ### Features
 - Upload PDF File: Users can upload a PDF file to the server.
