@@ -58,10 +58,10 @@ To run the web application, execute the following command:
 3. Go to the Body tab.
 4. Select raw and choose JSON from the dropdown menu.
 5. Enter your JSON into the body:
-´´´{
+`{
     "keyword": "your_keyword",
     "value": "your_value"
-}´´´
+}`
 6. Send the request.
 
 
