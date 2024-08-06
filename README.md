@@ -33,8 +33,39 @@
 - `pip install -r requirements.txt`
 
 ### Running the Application
-To run the application, execute the following command:
+To run the web application, execute the following command:
 `python3 app.py`
+
+### Accessing the application through api endpoints
+
+Using Postman to Access the api_upload Endpoint
+1. Open Postman.
+2. Create a new request.
+3. Set the request type to POST.
+4. Enter the URL: "your-machine"/api/upload.
+5. Go to the Body tab.
+6. Select form-data.
+7. Add a key for the file:
+- Key: pdf
+- Type: File
+- Value: Choose your PDF file from your local machine.
+8. Send the request.
+
+Using Postman to Access the api_validate Endpoint
+1. Create a new request 
+- Request type should still be set to POST.
+2. Enter the URL: "your-machine"/api/validate.
+3. Go to the Body tab.
+4. Select raw and choose JSON from the dropdown menu.
+5. Enter your JSON into the body:
+´´´{
+    "keyword": "your_keyword",
+    "value": "your_value"
+}´´´
+6. Send the request.
+
+
+Note: "your-machine" will look something like "http://127.0.0.1:5000"
 
 ### Unit Tests
 Unit tests are provided to check the code works as expected. To run the tests, execute the following command:
