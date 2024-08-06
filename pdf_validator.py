@@ -4,6 +4,15 @@ import pdfplumber
 from highlight_pdf import highlight_pdf
 
 def extract_pdf_text(pdf_file):
+    """
+    Extract text from a PDF file
+    
+    Args:
+    pdf_file: str: The path to the PDF file
+    
+    Returns:
+    pdf_list: list: A list of lines of text extracted from the PDF file
+    """
     pdf_list = []
     with pdfplumber.open(pdf_file) as pdf:
         for page in pdf.pages:
@@ -24,10 +33,19 @@ def extract_pdf_text(pdf_file):
                         row_text = " ".join(row)
                         pdf_list.append(row_text)
 
-    return pdf_list  # Correctly return the list of lines
+    return pdf_list
 
 
 def validate_price(pdf_list):
+    """
+    Validate the total price in the PDF file if it is a booking confirmation
+
+    Args:
+    pdf_list: list: A list of lines of text extracted from the PDF file
+
+    Returns:
+    bool: True if the total price is correct, False otherwise
+    """
     total_listed_price = 0
     
     for line in pdf_list:
@@ -48,9 +66,20 @@ def validate_price(pdf_list):
 
     
 def validate_pdf(file_path, keyword, value):
+    """
+    Validate the presence of the keyword and value in the PDF file
+
+    Args:
+    file_path: str: The path to the PDF file
+    keyword: str: The keyword to be validated
+    value: str: The value to be validated
+
+    Returns:
+    bool: True if the keyword and value are present in the PDF file, False otherwise
+    """
     pdf_list = extract_pdf_text(file_path)
+    price_validated = None
     # If the PDF is a booking confirmation then validate price sum
-    price_validated = None #TODO Try if its None
     if "Conﬁrmation" in pdf_list[0] or "Confirmation" in pdf_list[0] or "Buchungsbestätigung" in pdf_list[0]:
         price_validated = validate_price(pdf_list)
 

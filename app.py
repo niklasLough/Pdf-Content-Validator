@@ -41,7 +41,6 @@ def create_app():
     Returns:
     app: Flask
     """
-
     app = Flask(__name__)
     app.config.from_object(Config)
     Config.initialise_app(app)
@@ -65,11 +64,9 @@ def create_app():
 
 
     def handle_pdf_input(input_form):
-        # Get the user input
         keyword = input_form.keyword.data
         value = input_form.value.data
 
-        # Get the file path from the session
         pdf_file_path = session.get('file_path')
         found = False
         found, price_valid = validate_pdf(pdf_file_path, keyword, value)
@@ -93,7 +90,7 @@ def create_app():
     # def handle_csv_input(csv_form):
     #     csv = csv_form.csv.data
 
-
+    # Render the home page
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/home', methods=['GET', 'POST'])
     def home():
@@ -101,7 +98,7 @@ def create_app():
         input_form = InputDataFlaskForm()
         # csv_form = UploadCsvFlaskForm()
 
-        # If a file is uploaded
+        # If a file has been uploaded
         if upload_form.validate_on_submit():
             return file_upload(upload_form)
         
@@ -112,7 +109,6 @@ def create_app():
         # if csv_form.validate_on_submit():
         #     return handle_csv_input(csv_form)
         
-
         pdf_file_path = session.get('file_path')
         return render_template("index.html", 
                             upload_form=upload_form, 
@@ -128,10 +124,12 @@ def create_app():
                             # csv_form_submitted=request.args.get('csv_form_submitted'), # CSV
                             pdf_file_path=pdf_file_path)
 
+    # Render the help page
     @app.route('/help')
     def help():
         return render_template("help.html")
 
+    # Run the app
     app.run(debug=True)
     return app
 

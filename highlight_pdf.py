@@ -2,6 +2,17 @@ import fitz  # Same as the PyMuPDF library
 import os
 
 def highlight_pdf(file_path, keyword, value):
+    """
+    Highlight the keyword and value in the PDF file
+    
+    Args:
+    file_path: str: The path to the PDF file
+    keyword: str: The keyword to be highlighted
+    value: str: The value to be highlighted
+    
+    Returns:
+    file_path: str: The path to the new highlighted PDF file
+    """
     doc = fitz.open(file_path)
     for page_num in range(doc.page_count):
         page = doc.load_page(page_num)
