@@ -36,9 +36,9 @@
 To run the web application, execute the following command:
 `python3 app.py`
 
-### Accessing the application through api endpoints
+## Accessing the application through api endpoints
 
-Using Postman to Access the api_upload Endpoint
+### Using Postman to Access the api_upload Endpoint
 1. Open Postman.
 2. Create a new request.
 3. Set the request type to POST.
@@ -51,7 +51,7 @@ Using Postman to Access the api_upload Endpoint
 - Value: Choose your PDF file from your local machine.
 8. Send the request.
 
-Using Postman to Access the api_validate Endpoint
+### Using Postman to Access the api_validate Endpoint
 1. Create a new request 
 - Request type should still be set to POST.
 2. Enter the URL: "your-machine"/api/validate.
