@@ -1,6 +1,6 @@
 # PDF Content Validator
 
-## A Python web application wriiten using Flask that allows users to upload PDF files, input data, and validate the content of the PDF against the provided inputs.
+## A Python web application written using Flask that allows users to upload PDF files, input data, and validate the content of the PDF against the provided inputs.
 
 [![Python Badge](https://img.shields.io/badge/Python-3.6-blue?style=for-the-badge&logo=python&logoColor=blue)](https://www.python.org/)
 [![Flask Badge](https://img.shields.io/badge/Flask-2.1.1-blue?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
