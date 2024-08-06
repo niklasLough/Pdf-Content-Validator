@@ -1,7 +1,7 @@
 #Program to validate the presence of specific elements within a PDF file
 import re
 import pdfplumber
-# from pdfminer.high_level import extract_text
+from highlight_pdf import highlight_pdf
 
 def extract_pdf_text(pdf_file):
     pdf_list = []
@@ -11,7 +11,6 @@ def extract_pdf_text(pdf_file):
             # Extract text from the page
             text = page.extract_text()
             if text:
-                # print("\n",text)
                 page_list = re.split('\n', text)
                 pdf_list.extend(page_list)
 
@@ -24,7 +23,7 @@ def extract_pdf_text(pdf_file):
                         row = [cell if cell is not None else "" for cell in row]
                         row_text = " ".join(row)
                         pdf_list.append(row_text)
-    # print(pdf_list)
+
     return pdf_list  # Correctly return the list of lines
 
 
@@ -42,11 +41,8 @@ def validate_price(pdf_list):
             if client_price:
                 client_price = client_price[0].replace('.', '').replace(',', '')
                 total_listed_price += int(client_price)
-    
-    print("Total price", total_price)
-    print("Total listed price", total_listed_price)
+
     if int(total_listed_price) == int(total_price):       
-        print("hello")
         return True
     return False
 
@@ -55,7 +51,7 @@ def validate_pdf(file_path, keyword, value):
     pdf_list = extract_pdf_text(file_path)
     # If the PDF is a booking confirmation then validate price sum
     price_validated = None #TODO Try if its None
-    if "Confirmation" in pdf_list[0] or "Buchungsbestätigung" in pdf_list[0]:
+    if "Conﬁrmation" in pdf_list[0] or "Confirmation" in pdf_list[0] or "Buchungsbestätigung" in pdf_list[0]:
         price_validated = validate_price(pdf_list)
 
     # Check if the keyword and value are present in the same line in the PDF 
@@ -63,6 +59,7 @@ def validate_pdf(file_path, keyword, value):
     for line in pdf_list:
         if keyword.lower() in line.lower() and value.lower() in line.lower():
             found = True
+            highlight_pdf(file_path, keyword, value)
             break
 
     return found, price_validated

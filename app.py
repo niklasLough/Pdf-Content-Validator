@@ -7,7 +7,6 @@ from wtforms.validators import InputRequired
 
 from config_app import Config
 from pdf_validator import validate_pdf
-from highlight_pdf import highlight_pdf
 
 
 class UploadPdfFlaskForm(FlaskForm):
@@ -15,7 +14,7 @@ class UploadPdfFlaskForm(FlaskForm):
     Class to create a FlaskForm for uploading a PDF file
     """
     pdf = FileField("Choose PDF File", validators=[InputRequired()])
-    submit = SubmitField("Upload File")
+    submit = SubmitField("Upload PDF File")
 
 
 class InputDataFlaskForm(FlaskForm):
@@ -27,12 +26,12 @@ class InputDataFlaskForm(FlaskForm):
     submit = SubmitField("Submit Input")
 
 
-class UploadCsvFlaskForm(FlaskForm):
-    """
-    Class to create a FlaskForm for uploading a CSV file
-    """
-    csv = FileField("Choose CSV File", validators=[InputRequired()])
-    submit = SubmitField("Upload File")
+# class UploadCsvFlaskForm(FlaskForm):
+#     """
+#     Class to create a FlaskForm for uploading a CSV file
+#     """
+#     csv = FileField("Choose CSV File")
+#     submit = SubmitField("Upload CSV File")
 
 
 def create_app():
@@ -47,12 +46,11 @@ def create_app():
     app.config.from_object(Config)
     Config.initialise_app(app)
 
+
     def file_upload(upload_form):
         pdf = upload_form.pdf.data
         file_name = secure_filename(pdf.filename)
-        print(file_name)
         if not file_name.endswith('.pdf'):
-            print("hello")
             return redirect(url_for('home', not_pdf=True))
         try:
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
@@ -75,30 +73,25 @@ def create_app():
         pdf_file_path = session.get('file_path')
         found = False
         found, price_valid = validate_pdf(pdf_file_path, keyword, value)
-        if found:
-            highlight_pdf(pdf_file_path, keyword, value)
 
         session['found'] = found
         session['price_valid'] = price_valid
         if found and price_valid:
-            print("found and price_valid")
             return redirect(url_for('home', success=True, validated=True, price_valid=True))
         elif found and price_valid is None:
-            print("found")
             return redirect(url_for('home', success=True, validated=True))
         elif not found and price_valid is None:
-            print("not found")
             return redirect(url_for('home', success=True, not_validated=True))
         elif found and price_valid is False:
-            print("found and price_invalid")
             return redirect(url_for('home', success=True, validated=True, price_invalid=True))
         elif not found and price_valid:
-            print("price_valid")
             return redirect(url_for('home', success=True, not_validated=True, price_valid=True))
         else:
-            print("noooo")
             return redirect(url_for('home', success=True, not_validated=True, price_invalid=True))
+        
 
+    # def handle_csv_input(csv_form):
+    #     csv = csv_form.csv.data
 
 
     @app.route('/', methods=['GET', 'POST'])
@@ -106,7 +99,7 @@ def create_app():
     def home():
         upload_form = UploadPdfFlaskForm()
         input_form = InputDataFlaskForm()
-        csv_form = UploadCsvFlaskForm()
+        # csv_form = UploadCsvFlaskForm()
 
         # If a file is uploaded
         if upload_form.validate_on_submit():
@@ -117,13 +110,14 @@ def create_app():
             return handle_pdf_input(input_form)
         
         # if csv_form.validate_on_submit():
-        #     return #TODO
+        #     return handle_csv_input(csv_form)
         
-        
+
         pdf_file_path = session.get('file_path')
         return render_template("index.html", 
                             upload_form=upload_form, 
                             input_form=input_form, 
+                            # csv_form=csv_form,
                             success=request.args.get('success'),
                             data_submitted=request.args.get('data_submitted'),
                             validated=request.args.get('validated'), 
@@ -131,6 +125,7 @@ def create_app():
                             price_invalid=request.args.get('price_invalid'), 
                             price_valid=request.args.get('price_valid'),
                             not_pdf=request.args.get('not_pdf'),
+                            # csv_form_submitted=request.args.get('csv_form_submitted'), # CSV
                             pdf_file_path=pdf_file_path)
 
     @app.route('/help')
