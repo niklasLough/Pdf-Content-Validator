@@ -17,15 +17,16 @@ def highlight_pdf(file_path, keyword, value):
     for page_num in range(doc.page_count):
         page = doc.load_page(page_num)
         page = clear_highlights(page)
-        text_instances = page.search_for(keyword.lower())
-        for inst in text_instances:
-            highlight = page.add_highlight_annot(inst)
-            highlight.update()
-        text_instances = page.search_for(value.lower())
-        for inst in text_instances:
-            highlight = page.add_highlight_annot(inst)
-            highlight.update()
 
+        # Extract text blocks from the page
+        blocks = page.get_text("blocks")
+        for block in blocks:
+            text = block[4] # The text content is at the 5th index of the block tuple
+            if keyword.lower() in text.lower() and value.lower() in text.lower():
+                # Highlight the entire block (line) which contains both the keyword and value
+                rect = fitz.Rect(block[:4])
+                highlight = page.add_highlight_annot(rect)
+                highlight.update()
     # Save the document to a temporary file
     temp_file_path = file_path + '.highlight'
     doc.save(temp_file_path, garbage=4, deflate=True)
@@ -38,16 +39,14 @@ def highlight_pdf(file_path, keyword, value):
 
 def clear_highlights(page):
     """
-    Clear all highlights in the PDF file
+    Clear all previous highlights in the PDF file
     
     Args:
     page: fitz.Page: The page to clear the highlights from
     """
     annotations = page.annots()
     if annotations:
-        print("Hello")
         for annot in annotations:
-            print("Hello from for loop")
             if annot.type[0] == 8:  # Type 8 means the annotations is a highlight
                 page.delete_annot(annot)
     return page
