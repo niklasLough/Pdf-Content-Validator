@@ -1,7 +1,6 @@
 #Program to validate the presence of specific elements within a PDF file
 import re
 import pdfplumber
-from highlight_pdf import highlight_pdf
 
 def extract_pdf_text(pdf_file):
     """
@@ -39,6 +38,7 @@ def extract_pdf_text(pdf_file):
 def validate_price(pdf_list):
     """
     Validate the total price in the PDF file if it is a booking confirmation
+    Note: This is only relevant for users from the company I was interned at
 
     Args:
     pdf_list: list: A list of lines of text extracted from the PDF file
@@ -67,7 +67,7 @@ def validate_price(pdf_list):
     
 def validate_pdf(file_path, keyword, value):
     """
-    Validate the presence of the keyword and value in the PDF file
+    Validate the presence of the keyword and value on the same line in the PDF file
 
     Args:
     file_path: str: The path to the PDF file
@@ -75,7 +75,7 @@ def validate_pdf(file_path, keyword, value):
     value: str: The value to be validated
 
     Returns:
-    bool: True if the keyword and value are present in the PDF file, False otherwise
+    bool: True if the keyword and value are present on the same line in the PDF file, False otherwise
     """
     pdf_list = extract_pdf_text(file_path)
     price_validated = None
@@ -88,7 +88,6 @@ def validate_pdf(file_path, keyword, value):
     for line in pdf_list:
         if keyword.lower() in line.lower() and value.lower() in line.lower():
             found = True
-            highlight_pdf(file_path, keyword, value)
             break
 
     return found, price_validated

@@ -1,4 +1,5 @@
 import pytest
+import fitz
 from unittest.mock import patch, MagicMock
 from pdf_validator import extract_pdf_text, validate_price, validate_pdf
 

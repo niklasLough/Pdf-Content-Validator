@@ -7,6 +7,7 @@ from wtforms.validators import InputRequired
 
 from config_app import Config
 from pdf_validator import validate_pdf
+from highlight_pdf import highlight_pdf
 
 
 class UploadPdfFlaskForm(FlaskForm):
@@ -75,6 +76,7 @@ def create_app():
                 return redirect(url_for('home', no_file=True))
             
             found, price_valid = validate_pdf(pdf_file_path, keyword, value)
+            highlight_pdf(pdf_file_path, keyword, value)
             session['found'] = found
             session['price_valid'] = price_valid
 
