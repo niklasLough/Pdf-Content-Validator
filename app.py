@@ -33,21 +33,42 @@ def create_app():
     app.config.from_object(Config)
     Config.initialise_app(app)
 
-    # Separate function to be accessed by both web app and API routes
-    def save_pdf_file(pdf, upload_form):
+    def save_pdf_file(pdf, upload_folder):
         """
         Save the uploaded PDF file to the upload folder
         
         Args:
         pdf: FileStorage: The uploaded PDF file
-        upload_form: str: The path to the upload folder
+        upload_folder: str: The path to the upload folder
         """
         file_name = secure_filename(pdf.filename)
         if not file_name.endswith('.pdf'):
             raise ValueError("File is not a PDF")
-        file_path = os.path.join(upload_form, file_name)
+        file_path = os.path.join(upload_folder, file_name)
         pdf.save(file_path)
         return file_path
+
+    def handle_pdf_upload(upload_form, redirect_endpoint):
+        """
+        Handle the PDF upload process
+        
+        Args:
+        upload_form: FlaskForm: The form for uploading PDF files
+        redirect_endpoint: str: The endpoint to redirect after upload
+        
+        Returns:
+        Response: The redirection response or None
+        """
+        if upload_form.validate_on_submit():
+            try:
+                file_path = save_pdf_file(upload_form.pdf.data, app.config['UPLOAD_FOLDER'])
+                session['file_path'] = file_path
+                return redirect(url_for(redirect_endpoint, success=True))
+            except ValueError:
+                return redirect(url_for(redirect_endpoint, not_pdf=True))
+            except Exception as e:
+                return str(e)
+        return None
 
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/home', methods=['GET', 'POST'])
@@ -58,16 +79,10 @@ def create_app():
         upload_form = UploadPdfFlaskForm()
         input_form = InputDataFlaskForm()
 
-        if upload_form.validate_on_submit():
-            try:
-                file_path = save_pdf_file(upload_form.pdf.data, app.config['UPLOAD_FOLDER'])
-                session['file_path'] = file_path
-                return redirect(url_for('home', success=True))
-            except ValueError:
-                return redirect(url_for('home', not_pdf=True))
-            except Exception as e:
-                return str(e)
-        
+        upload_response = handle_pdf_upload(upload_form, 'home')
+        if upload_response:
+            return upload_response
+
         if input_form.validate_on_submit():
             keyword = input_form.keyword.data
             value = input_form.value.data
@@ -81,19 +96,8 @@ def create_app():
             session['price_valid'] = price_valid
 
             # Redirect to the home page with the appropriate message
-            if found and price_valid:
-                return redirect(url_for('home', success=True, validated=True, price_valid=True))
-            elif found and price_valid is None:
-                return redirect(url_for('home', success=True, validated=True))
-            elif not found and price_valid is None:
-                return redirect(url_for('home', success=True, not_validated=True))
-            elif found and price_valid is False:
-                return redirect(url_for('home', success=True, validated=True, price_invalid=True))
-            elif not found and price_valid:
-                return redirect(url_for('home', success=True, not_validated=True, price_valid=True))
-            else:
-                return redirect(url_for('home', success=True, not_validated=True, price_invalid=True))
-        
+            return redirect(url_for('home', success=True, validated=found, price_valid=price_valid))
+
         pdf_file_path = session.get('file_path')
         return render_template("index.html", 
                             upload_form=upload_form, 
@@ -115,12 +119,22 @@ def create_app():
         """
         return render_template("help.html")
     
-    @app.route('/csv')
+
+    @app.route('/csv', methods=['GET', 'POST'])
     def csv():
         """
         Page to upload a CSV with keywords and values to be validated
         """
-        return render_template("csv.html")
+        upload_form = UploadPdfFlaskForm()
+
+        upload_response = handle_pdf_upload(upload_form, 'csv')
+        if upload_response:
+            return upload_response
+
+        return render_template("csv.html",
+                            upload_form=upload_form,
+                            success=request.args.get('success'),
+                            not_pdf=request.args.get('not_pdf'))
 
 
     @app.route('/api/upload', methods=['POST'])
