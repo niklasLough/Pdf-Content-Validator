@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('help') }}">Help</a></li>
+            <li><a href="{{ url_for('csv') }}">CSV</a></li>
+        </ul>
+    </nav>
+    <header>
+        <img src="{{ url_for('static', filename='Tui-logo.png') }}" alt="Tui logo">
+        <div>
+            <h1>Upload CSV</h1>
+            <h3>Upload CSV File of Keywords and Values to validate at once in PDF</h3>
+        </div>
+    </header>
+
+    <main>
+    </main>
+</body>
+</html>

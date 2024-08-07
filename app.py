@@ -114,6 +114,13 @@ def create_app():
         Help page for the web app
         """
         return render_template("help.html")
+    
+    @app.route('/csv')
+    def csv():
+        """
+        Page to upload a CSV with keywords and values to be validated
+        """
+        return render_template("csv.html")
 
 
     @app.route('/api/upload', methods=['POST'])
