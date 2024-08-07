@@ -68,4 +68,8 @@ Note- A further validation checks the cost of customers add to the total price o
 ### Unit Tests
 Unit tests are provided to check the text extraction and validation works as expected. 
 To run the tests, execute the following command in the directory containing your app.py file:
-`pytest`
+`python3 -m pytest`
+
+
+### Notes
+For some structures in the same line within some PDFs the highlight feature might not work. However the validation feature is still robust and works for all structures.
