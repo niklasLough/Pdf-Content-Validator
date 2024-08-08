@@ -1,5 +1,5 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -118,6 +118,50 @@ form {
     margin-top: 30px;
 }
 
+/* PDF Upload Button Style */
+.pdf-upload-button {
+    background-color: #4CAF50; /* Green background */
+    border: 2px solid #388E3C; /* Darker green border */
+    color: white; /* White text */
+    padding: 15px 20px;
+    font-size: 1.5em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.pdf-upload-button:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+    transform: scale(1.05); /* Slightly increase size on hover */
+}
+
+.pdf-upload-button:active {
+    background-color: #388E3C; /* Dark green on active */
+    transform: scale(1); /* Reset size on active */
+}
+
+/* CSV Upload Button Style */
+.csv-upload-button {
+    background-color: #008CBA; /* Blue background */
+    border: 2px solid #007BB5; /* Darker blue border */
+    color: white; /* White text */
+    padding: 15px 20px;
+    font-size: 1.5em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.csv-upload-button:hover {
+    background-color: #007bb5; /* Slightly darker blue on hover */
+    transform: scale(1.05); /* Slightly increase size on hover */
+}
+
+.csv-upload-button:active {
+    background-color: #005f73; /* Darker blue on active */
+    transform: scale(1); /* Reset size on active */
+}
+
 input[type="file"], input[type="submit"] {
     font-size: 1.5em; /* Increased size of the buttons */
     padding: 15px 20px; /* Increased padding for the buttons */
@@ -178,13 +222,13 @@ p {
 
 .error-message {
     text-align: center;
-    border: 2px solid red; /* Green border */
+    border: 2px solid red; /* Red border */
     border-radius: 8px;
     width: 100%; /* Full width */
     max-width: 400px; /* Max width for the element */
     margin: 20px auto; /* Center the element horizontally and add some top/bottom margin */
     padding: 10px; /* Add padding inside the element */
-    color: red; /* Green text color */
+    color: red; /* Red text color */
 }
 
 iframe {

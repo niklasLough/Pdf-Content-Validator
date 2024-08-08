@@ -24,18 +24,44 @@
     </header>
 
     <main>
-        <form method='POST' enctype='multipart/form-data'>
-            {{ upload_form.hidden_tag() }}
-            {{ upload_form.pdf() }}
-            {{ upload_form.submit() }}
+        <form method="post" enctype="multipart/form-data">
+            {{ upload_pdf_form.hidden_tag() }}
+            <div>
+                {{ upload_pdf_form.pdf.label }}
+                {{ upload_pdf_form.pdf() }}
+            </div>
+            <div>
+                {{ upload_pdf_form.submit(class_='pdf-upload-button') }}
+            </div>
         </form>
-        {% if success %}
-            <p class="success-message">File uploaded successfully!</p>
+            <hr>
+        <form method="post" enctype="multipart/form-data">
+            {{ upload_csv_form.hidden_tag() }}
+            <div>
+                {{ upload_csv_form.csv.label }}
+                {{ upload_csv_form.csv() }}
+            </div>
+            <div>
+                {{ upload_csv_form.submit(class_='csv-upload-button') }}
+            </div>
+        </form>
+
+        {% if pdf_success %}
+        <p class="success-message">PDF file uploaded successfully!</p>
+        {% endif %}
+
+        {% if csv_success %}
+        <p class="success-message">CSV file uploaded successfully!</p>
         {% endif %}
 
         {% if not_pdf %}
         <p class="error-message">Incorrect File Input! <br> You can only upload PDF files!</p>
         {% endif %}   
+
+        {% if not_csv %}
+        <p class="error-message">Incorrect File Input! <br> You can only upload CSV files!</p>
+        {% endif %} 
+
     </main>
 </body>
 </html>

@@ -24,10 +24,15 @@
     </header>
 
     <main>
-    <form method='POST' enctype='multipart/form-data'>
+    <form method="post" enctype="multipart/form-data">
         {{ upload_form.hidden_tag() }}
-        {{ upload_form.pdf() }}
-        {{ upload_form.submit() }}
+        <div>
+            {{ upload_form.pdf.label }}
+            {{ upload_form.pdf() }}
+        </div>
+        <div>
+            {{ upload_form.submit(class_='pdf-upload-button') }}
+        </div>
     </form>
     {% if success %}
         <p class="success-message">File uploaded successfully!</p>
