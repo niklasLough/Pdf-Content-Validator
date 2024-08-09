@@ -8,7 +8,7 @@ from wtforms.validators import InputRequired
 
 from config_app import Config
 from pdf_validator import validate_pdf
-from highlight_pdf import highlight_pdf
+from highlight_pdf import highlight_pdf, highlight_pdf_from_csv
 
 
 class UploadPdfFlaskForm(FlaskForm):
@@ -180,7 +180,9 @@ def create_app():
                 results.append((keyword, value, found, price_valid))
             print(results)
             session['results'] = results
+            highlight_pdf_from_csv(pdf_file_path, keyword_value_list)
 
+        pdf_file_path = session.get('pdf_path')
         results = session.get('results')
         return render_template("csv_file.html",
                             upload_pdf_form=upload_pdf_form,
@@ -189,7 +191,8 @@ def create_app():
                             pdf_success=request.args.get('pdf_success'),
                             csv_success=request.args.get('csv_success'),
                             not_pdf=request.args.get('not_pdf'),
-                            not_csv=request.args.get('not_csv'))
+                            not_csv=request.args.get('not_csv'),
+                            pdf_file_path=pdf_file_path)
 
 
 
