@@ -11,8 +11,8 @@
     <nav>
         <ul>
             <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="{{ url_for('help') }}">Help</a></li>
             <li><a href="{{ url_for('csv_file') }}">CSV</a></li>
+            <li><a href="{{ url_for('help') }}">Help</a></li>
         </ul>
     </nav>
     <header>
@@ -26,13 +26,27 @@
         <p class="main-highlight">Welcome to the help page for the TUI PDF Validator App.</p> 
         <p>This app validates the presence of specific elements within a PDF file. 
         The application checks if a given string (e.g., "Gesamtpreis") and a corresponding value (e.g., 4.1300,00€) appear on the same line within the PDF.</p>
-        <p>Here are the steps to use the app:</p>
+        <p>There are two ways to use the app:</p>
+        <ol>
+            <li>Upload a PDF file and enter the keyword and value you want to validate.</li>
+            <li>Upload a CSV file containing multiple keywords and values to validate at once.
+        </ol>
+        <br>
+        <p>Here is a step-by-step guide on how to use the home app:</p>
         <ol>
             <li>Upload a PDF file using the form on the home page.</li>
             <li>Enter the keyword and value you want to validate.</li>
             <li>Click the submit button.</li>
-            <li>See the results as to if the inputs appear on the same line in the PDF.</li>
+            <li>See the results as to if the inputs appear on the same line in the PDF. The location of the values is highlighted in the PDF shown.</li>
             <li>If the document is a travel confirmation a result of the total price validation will also be shown.</li>
+        </ol>
+        <br>
+        <p>Here step-by-step guide on how to use the CSV app:</p>
+        <ol>
+            <li>Upload a PDF file using the form on the home page.</li>
+            <li>Upload a CSV file of keyword and value pairs.</li>
+            <li>Click the submit button.</li>
+            <li>See the results in the table as to if the inputs appear on the same line in the PDF. The location of the values are highlighted in the PDF shown.</li>
         </ol>
     </main>
 </body>
