@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, j
 from flask_wtf import FlaskForm
 from werkzeug.utils import secure_filename
 import os
+import csv
 from wtforms import FileField, SubmitField, StringField
 from wtforms.validators import InputRequired
 
@@ -31,7 +32,7 @@ class UploadCsvFlaskForm(FlaskForm):
     """
     Class to create a FlaskForm for uploading a CSV file
     """
-    csv = FileField("Choose CSV File", validators=[InputRequired()])
+    csv_file = FileField("Choose CSV File", validators=[InputRequired()])
     submit = SubmitField("Upload CSV File")
 
 
@@ -129,10 +130,14 @@ def create_app():
         return render_template("help.html")
     
     @app.route('/csv', methods=['GET', 'POST'])
-    def csv():
+    def csv_file():
         """
         Page to upload a CSV with keywords and values to be validated
         """
+
+        if 'results' in session:
+            session.pop('results')
+
         upload_pdf_form = UploadPdfFlaskForm()
         upload_csv_form = UploadCsvFlaskForm()
 
@@ -140,28 +145,47 @@ def create_app():
             try:
                 pdf_path = save_file(upload_pdf_form.pdf.data, app.config['UPLOAD_FOLDER'], 'pdf')
                 session['pdf_path'] = pdf_path
-                return redirect(url_for('csv', pdf_success=True))
+                if session.get('csv_path'):
+                    session.pop('csv_path')
+                return redirect(url_for('csv_file', pdf_success=True))
             except ValueError:
-                return redirect(url_for('csv', not_pdf=True))
+                return redirect(url_for('csv_file', not_pdf=True))
             except Exception as e:
                 return str(e)
         
         if upload_csv_form.validate_on_submit():
             try:
-                csv_file = upload_csv_form.csv.data
-                print(csv_file)
+                csv_file = upload_csv_form.csv_file.data
                 csv_path = save_file(csv_file, app.config['UPLOAD_FOLDER'], 'csv')
                 session['csv_path'] = csv_path
-                return redirect(url_for('csv', csv_success=True))
+                # Clear previous results
+                session.pop('results', None)
+                return redirect(url_for('csv_file', csv_success=True))
             except ValueError:
-                return redirect(url_for('csv', not_csv=True))
+                return redirect(url_for('csv_file', not_csv=True))
             except Exception as e:
                 return str(e)
 
+        csv_path = session.get('csv_path')
+        pdf_path = session.get('pdf_path')
+        if csv_path and pdf_path:
+            # Read the CSV file and validate the PDF file
+            with open(csv_path, 'r') as csv_file_reader:
+                reader = csv.reader(csv_file_reader)
+                keyword_value_list = [line for line in reader]
+            pdf_file_path = session.get('pdf_path')
+            results = []
+            for keyword, value in keyword_value_list:
+                found, price_valid = validate_pdf(pdf_file_path, keyword, value)
+                results.append((keyword, value, found, price_valid))
+            print(results)
+            session['results'] = results
 
-        return render_template("csv.html",
+        results = session.get('results')
+        return render_template("csv_file.html",
                             upload_pdf_form=upload_pdf_form,
                             upload_csv_form=upload_csv_form,
+                            results=results,
                             pdf_success=request.args.get('pdf_success'),
                             csv_success=request.args.get('csv_success'),
                             not_pdf=request.args.get('not_pdf'),
@@ -218,5 +242,5 @@ def create_app():
 
 
 if __name__ == "__main__":
-    # Run the Flask app when the script is executed
+    # Run the Flask app when the script is executed by user
     create_app().run(debug=True)
