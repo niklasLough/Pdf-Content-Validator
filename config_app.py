@@ -12,3 +12,9 @@ class Config:
         # Ensure the upload folder exists
         if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.makedirs(app.config['UPLOAD_FOLDER'])
+
+
+class TestConfig(Config):
+    TESTING = True
+    DEBUG = True
+    # Other test-specific configurations

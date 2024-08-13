@@ -16,7 +16,7 @@ def highlight_pdf(file_path, keyword, value):
     doc = fitz.open(file_path)
     for page_num in range(doc.page_count):
         page = doc.load_page(page_num)
-        page = clear_highlights(page)
+        page = clear_highlights(page) # Clear previous highlights
 
         # Extract text blocks from the page
         blocks = page.get_text("blocks")
@@ -29,7 +29,7 @@ def highlight_pdf(file_path, keyword, value):
                 highlight.update()
     # Save the document to a temporary file
     temp_file_path = file_path + '.highlight'
-    doc.save(temp_file_path, garbage=4, deflate=True)
+    doc.save(temp_file_path) 
     doc.close()
 
     # Replace the original file with the temporary file
@@ -56,7 +56,7 @@ def highlight_pdf_from_csv(file_path, keyword_value_list):
         # Extract text blocks from the page
         blocks = page.get_text("blocks")
         for block in blocks:
-            text = block[4] # The text content is at the 5th index of the block tuple
+            text = block[4] # Text content is at the 5th index of the block tuple
             for keyword, value in keyword_value_list:
                 if keyword.lower() in text.lower() and value.lower() in text.lower():
                     # Highlight the entire block (line) which contains both the keyword and value

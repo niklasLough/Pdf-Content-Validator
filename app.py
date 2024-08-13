@@ -38,7 +38,7 @@ class UploadCsvFlaskForm(FlaskForm):
 
 def create_app():
     """
-    Create the Flask app with the necessary routes and configurations
+    Create the Flask app and initialise routes and configurations
     """
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -49,27 +49,11 @@ def create_app():
         file_name = secure_filename(file.filename)
         if not file_name.endswith(f'.{valid_extension}'):
             raise ValueError(f"File is not a {valid_extension.upper()}")
-        file_path = os.path.join(upload_folder, file_name)
+        # Construct the full path where the file will be saved
+        file_path = os.path.join(upload_folder, file_name) 
         file.save(file_path)
         return file_path
     
-    
-    def save_pdf_api(file, upload_folder):
-        file_name = secure_filename(file.filename)
-        if not file_name.endswith('.pdf'):
-            raise ValueError("File is not a PDF")
-        file_path = os.path.join(upload_folder, file_name)
-        file.save(file_path)
-        return file_path
-    
-    def save_csv_api(file, upload_folder):
-        file_name = secure_filename(file.filename)
-        if not file_name.endswith('.csv'):
-            raise ValueError("File is not a CSV")
-        file_path = os.path.join(upload_folder, file_name)
-        file.save(file_path)
-        return file_path
-
 
     @app.route('/', methods=['GET', 'POST'])
     @app.route('/home', methods=['GET', 'POST'])
@@ -80,6 +64,7 @@ def create_app():
         upload_form = UploadPdfFlaskForm()
         input_form = InputDataFlaskForm()
 
+        # If the user uploads a PDF file
         if upload_form.validate_on_submit():
             try:
                 file_path = save_file(upload_form.pdf.data, app.config['UPLOAD_FOLDER'], 'pdf')
@@ -90,6 +75,7 @@ def create_app():
             except Exception as e:
                 return str(e)
         
+        # If the user submits a keyword and value
         if input_form.validate_on_submit():
             keyword = input_form.keyword.data
             value = input_form.value.data
@@ -116,7 +102,8 @@ def create_app():
             else:
                 return redirect(url_for('home', success=True, not_validated=True, price_invalid=True))
         
-        pdf_file_path = session.get('file_path')
+        pdf_file_path = session.get('file_path') 
+        # Return the home page with the appropriate request arguments
         return render_template("index.html", 
                             upload_form=upload_form, 
                             input_form=input_form, 
@@ -130,6 +117,7 @@ def create_app():
                             no_file=request.args.get('no_file'),
                             pdf_file_path=pdf_file_path)
 
+
     @app.route('/help')
     def help():
         """
@@ -137,15 +125,16 @@ def create_app():
         """
         return render_template("help.html")
     
+
     @app.route('/csv', methods=['GET', 'POST'])
     def csv_file():
         """
         Page to upload a CSV with keywords and values to be validated
         """
-
+        # Clear previous results if they exist at start of the session
         if 'results' in session:
             session.pop('results')
-
+            
         upload_pdf_form = UploadPdfFlaskForm()
         upload_csv_form = UploadCsvFlaskForm()
 
@@ -153,6 +142,7 @@ def create_app():
             try:
                 pdf_path = save_file(upload_pdf_form.pdf.data, app.config['UPLOAD_FOLDER'], 'pdf')
                 session['pdf_path'] = pdf_path
+                # Clear previous path if it exists
                 if session.get('csv_path'):
                     session.pop('csv_path')
                 return redirect(url_for('csv_file', pdf_success=True))
@@ -166,14 +156,15 @@ def create_app():
                 csv_file = upload_csv_form.csv_file.data
                 csv_path = save_file(csv_file, app.config['UPLOAD_FOLDER'], 'csv')
                 session['csv_path'] = csv_path
-                # Clear previous results
-                session.pop('results', None)
+                if session.get('results'):
+                    session.pop('results')
                 return redirect(url_for('csv_file', csv_success=True))
             except ValueError:
                 return redirect(url_for('csv_file', not_csv=True))
             except Exception as e:
                 return str(e)
 
+        
         csv_path = session.get('csv_path')
         pdf_path = session.get('pdf_path')
         if csv_path and pdf_path:
@@ -181,12 +172,12 @@ def create_app():
             with open(csv_path, 'r') as csv_file_reader:
                 reader = csv.reader(csv_file_reader)
                 keyword_value_list = [line for line in reader]
+            # Validate the PDF file using the keyword-value pairs    
             pdf_file_path = session.get('pdf_path')
             results = []
             for keyword, value in keyword_value_list:
                 found, price_valid = validate_pdf(pdf_file_path, keyword, value)
                 results.append((keyword, value, found, price_valid))
-            print(results)
             session['results'] = results
             highlight_pdf_from_csv(pdf_file_path, keyword_value_list)
 
@@ -203,22 +194,18 @@ def create_app():
                             pdf_file_path=pdf_file_path)
 
 
-
     @app.route('/api/upload', methods=['POST'])
     def api_upload():
         """
         Upload a PDF file via an API endpoint
-
-        Returns:
-        Appropriate JSON responses for successes and errors
         """
         if 'pdf' not in request.files:
             return jsonify({'error': 'No file included in the request'}), 400 #Error code 400 for bad request
         file = request.files['pdf']
-        if file.filename == '': #Checking for an empty filename
+        if file.filename == '':
             return jsonify({'error': 'No selected file'}), 400
         try:
-            file_path = save_pdf_api(file, app.config['UPLOAD_FOLDER'])
+            file_path = save_file(file, app.config['UPLOAD_FOLDER'], 'pdf')
             session['file_path'] = file_path
             return jsonify({'message': 'File uploaded successfully', 'file_path': file_path}), 200 # Success code 200
         except ValueError as e:
@@ -231,9 +218,6 @@ def create_app():
     def api_validate():
         """
         API endpoint which validates the PDF file
-
-        Returns:
-        Appropriate JSON responses for successes and errors
         """
         data = request.get_json()
         if not data or 'keyword' not in data or 'value' not in data:
@@ -250,39 +234,28 @@ def create_app():
         return jsonify({'found': found, 'price_valid': price_valid}), 200 
 
 
-
-
     @app.route('/api/csv', methods=['POST'])
     def csv_api_upload_and_validate():
         """
         Upload a CSV and PDF file via an API endpoint and validate the PDF using the CSV file.
-
-        Returns:
-        JSON response containing the validation results for each keyword-value pair.
         """
-        # Check if both files are present in the request
         if 'csv' not in request.files or 'pdf' not in request.files:
             return jsonify({'error': 'Both CSV and PDF files are required'}), 400
         
         csv_file = request.files['csv']
         pdf_file = request.files['pdf']
-
-        # Check for empty filenames
         if csv_file.filename == '' or pdf_file.filename == '':
             return jsonify({'error': 'Both CSV and PDF files must be selected'}), 400
 
         try:
-            # Save the files
-            csv_path = save_csv_api(csv_file, app.config['UPLOAD_FOLDER'])
-            pdf_path = save_pdf_api(pdf_file, app.config['UPLOAD_FOLDER'])
+            csv_path = save_file(csv_file, app.config['UPLOAD_FOLDER'], 'csv')
+            pdf_path = save_file(pdf_file, app.config['UPLOAD_FOLDER'], 'pdf')
 
-            # Read the CSV file and extract keyword-value pairs
+            # Read the CSV file and validate keyword-value pairs
             keyword_value_list = []
             with open(csv_path, 'r') as csv_file_reader:
                 reader = csv.reader(csv_file_reader)
                 keyword_value_list = [line for line in reader]
-
-            # Validate the PDF using the keyword-value pairs from the CSV
             results = []
             for keyword, value in keyword_value_list:
                 found, price_valid = validate_pdf(pdf_path, keyword, value)
@@ -293,19 +266,19 @@ def create_app():
                     'price_valid': price_valid
                 })
 
-            # Return the results
             return jsonify({
                 'message': 'Files uploaded and validated successfully',
                 'results': results
-            }), 200
+            }), 200 # Success code 200
 
         except ValueError as e:
-            return jsonify({'error': str(e)}), 400
+            return jsonify({'error': str(e)}), 400 # Error code 400 for bad request
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            return jsonify({'error': str(e)}), 500 # Error code 500 for internal server error
 
+    # Return the Flask app from create_app function
+    return app 
 
-    return app # Return the Flask app from create_app function
 
 if __name__ == "__main__":
     # Run the Flask app when the script is executed by user

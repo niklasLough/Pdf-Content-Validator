@@ -15,14 +15,14 @@ def extract_pdf_text(pdf_file):
     pdf_list = []
     with pdfplumber.open(pdf_file) as pdf:
         for page in pdf.pages:
-            
+
             # Extract text from the page
             text = page.extract_text()
             if text:
                 page_list = re.split('\n', text)
                 pdf_list.extend(page_list)
 
-            # Extract text tables on the page
+            # Extract text from tables on the page
             tables = page.extract_tables()
             if tables:
                 for table in tables:
@@ -38,7 +38,7 @@ def extract_pdf_text(pdf_file):
 def validate_price(pdf_list):
     """
     Validate the total price in the PDF file if it is a booking confirmation
-    Note: This is only relevant for users from the company I was interned at
+    Note: This is only relevant for users for users at the company where this application was initially developed during an internship.
 
     Args:
     pdf_list: list: A list of lines of text extracted from the PDF file
