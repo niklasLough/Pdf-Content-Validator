@@ -61,6 +61,14 @@ def create_app():
         file_path = os.path.join(upload_folder, file_name)
         file.save(file_path)
         return file_path
+    
+    def save_csv_api(file, upload_folder):
+        file_name = secure_filename(file.filename)
+        if not file_name.endswith('.csv'):
+            raise ValueError("File is not a CSV")
+        file_path = os.path.join(upload_folder, file_name)
+        file.save(file_path)
+        return file_path
 
 
     @app.route('/', methods=['GET', 'POST'])
@@ -241,8 +249,63 @@ def create_app():
         found, price_valid = validate_pdf(pdf_file_path, keyword, value)
         return jsonify({'found': found, 'price_valid': price_valid}), 200 
 
-    return app
 
+
+
+    @app.route('/api/csv', methods=['POST'])
+    def csv_api_upload_and_validate():
+        """
+        Upload a CSV and PDF file via an API endpoint and validate the PDF using the CSV file.
+
+        Returns:
+        JSON response containing the validation results for each keyword-value pair.
+        """
+        # Check if both files are present in the request
+        if 'csv' not in request.files or 'pdf' not in request.files:
+            return jsonify({'error': 'Both CSV and PDF files are required'}), 400
+        
+        csv_file = request.files['csv']
+        pdf_file = request.files['pdf']
+
+        # Check for empty filenames
+        if csv_file.filename == '' or pdf_file.filename == '':
+            return jsonify({'error': 'Both CSV and PDF files must be selected'}), 400
+
+        try:
+            # Save the files
+            csv_path = save_csv_api(csv_file, app.config['UPLOAD_FOLDER'])
+            pdf_path = save_pdf_api(pdf_file, app.config['UPLOAD_FOLDER'])
+
+            # Read the CSV file and extract keyword-value pairs
+            keyword_value_list = []
+            with open(csv_path, 'r') as csv_file_reader:
+                reader = csv.reader(csv_file_reader)
+                keyword_value_list = [line for line in reader]
+
+            # Validate the PDF using the keyword-value pairs from the CSV
+            results = []
+            for keyword, value in keyword_value_list:
+                found, price_valid = validate_pdf(pdf_path, keyword, value)
+                results.append({
+                    'keyword': keyword,
+                    'value': value,
+                    'found': found,
+                    'price_valid': price_valid
+                })
+
+            # Return the results
+            return jsonify({
+                'message': 'Files uploaded and validated successfully',
+                'results': results
+            }), 200
+
+        except ValueError as e:
+            return jsonify({'error': str(e)}), 400
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+
+    return app # Return the Flask app from create_app function
 
 if __name__ == "__main__":
     # Run the Flask app when the script is executed by user
