@@ -5,6 +5,7 @@ import os
 import csv
 from wtforms import FileField, SubmitField, StringField
 from wtforms.validators import InputRequired
+from flasgger import Swagger
 
 from config_app import Config
 from pdf_validator import validate_pdf
@@ -44,6 +45,7 @@ def create_app():
     app.config.from_object(Config)
     Config.initialise_app(app)
 
+    # swagger = Swagger(app)
 
     def save_file(file, upload_folder, valid_extension):
         file_name = secure_filename(file.filename)
@@ -200,19 +202,18 @@ def create_app():
         Upload a PDF file via an API endpoint
         """
         if 'pdf' not in request.files:
-            return jsonify({'error': 'No file included in the request'}), 400 #Error code 400 for bad request
+            return jsonify({'error': 'No file included in the request'}), 400
         file = request.files['pdf']
         if file.filename == '':
             return jsonify({'error': 'No selected file'}), 400
         try:
             file_path = save_file(file, app.config['UPLOAD_FOLDER'], 'pdf')
             session['file_path'] = file_path
-            return jsonify({'message': 'File uploaded successfully', 'file_path': file_path}), 200 # Success code 200
+            return jsonify({'message': 'File uploaded successfully', 'file_path': file_path}), 200
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
         except Exception as e:
-            return jsonify({'error': str(e)}), 500 #Error code 500 for internal server error
-
+            return jsonify({'error': str(e)}), 500
 
     @app.route('/api/validate', methods=['POST'])
     def api_validate():
