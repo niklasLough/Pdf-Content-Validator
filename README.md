@@ -91,5 +91,4 @@ To run the tests, execute the following command in the directory containing your
 
 ### Notes
 - For some structures in the same line within some PDFs the highlight feature might not work. However the validation feature is still robust and works for all structures.
-- The CSV page will retain the last validation instant, and a solution to clear this while keeping the same fucntionality has not been found.
 - Integration tests haven't been made for the API endpoints.
