@@ -50,7 +50,7 @@ Once the application is running, you can access the Swagger documentation at:
 [http://127.0.0.1:5000/apidocs/](http://127.0.0.1:5000/apidocs/)
 - **Endpoints:** The Swagger UI displays all available API endpoints. You can view details about each endpoint, including its method, parameters, and possible responses.
 - **Test Endpoints:** Use the "Try it out" button to send requests directly from the documentation. Here you should input the necessary parameters.
-- **View Response:** Swagger provides a of the request and response details.
+- **View Response:** Swagger provides a view of the request and response details.
 
 
 ### Access the API Endpoints using Postman (or another API development tool)
