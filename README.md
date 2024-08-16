@@ -48,6 +48,9 @@ The PDF Content Validator is a Python web application built with Flask. It enabl
 
 Once the application is running, you can access the Swagger documentation at:
 [http://127.0.0.1:5000/apidocs/](http://127.0.0.1:5000/apidocs/)
+- **Endpoints:** The Swagger UI displays all available API endpoints. You can view details about each endpoint, including its method, parameters, and possible responses.
+- **Test Endpoints:** Use the "Try it out" button to send requests directly from the documentation. Here you should input the necessary parameters.
+- **View Response:** Swagger provides a view of the request and response details.
 
 
 ### Access the API Endpoints using Postman (or another API development tool)
@@ -98,4 +101,3 @@ To run the tests, execute the following command in the directory containing your
 ### Notes
 - For some structures in the same line within some PDFs the highlight feature might not work. However the validation feature is still robust and works for all structures.
 - Integration tests haven't been made for the API endpoints.
-- The Swagger Documentation currently allow one to interact with the endpoints
