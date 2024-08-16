@@ -42,10 +42,10 @@ def create_app():
     Create the Flask app and initialise routes and configurations
     """
     app = Flask(__name__)
+    swagger = Swagger(app)
     app.config.from_object(Config)
     Config.initialise_app(app)
 
-    # swagger = Swagger(app)
 
     def save_file(file, upload_folder, valid_extension):
         file_name = secure_filename(file.filename)
@@ -200,6 +200,42 @@ def create_app():
     def api_upload():
         """
         Upload a PDF file via an API endpoint
+        ---
+        consumes:
+          - multipart/form-data
+        parameters:
+          - in: formData
+            name: pdf
+            type: file
+            required: true
+            description: The PDF file to upload
+        responses:
+          200:
+            description: File uploaded successfully
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: File uploaded successfully
+                file_path:
+                  type: string
+          400:
+            description: No file or invalid file included in the request
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: No file included in the request
+          500:
+            description: Internal server error
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: An error occurred
         """
         if 'pdf' not in request.files:
             return jsonify({'error': 'No file included in the request'}), 400
@@ -215,10 +251,30 @@ def create_app():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
+
     @app.route('/api/validate', methods=['POST'])
     def api_validate():
         """
         API endpoint which validates the PDF file
+        ---
+        consumes:
+          - application/json
+        parameters:
+          - in: body
+            name: body
+            required: true
+            schema:
+              type: object
+              properties:
+                keyword:
+                  type: string
+                value:
+                  type: string
+        responses:
+          200:
+            description: Keyword and value found in the PDF
+          400:
+            description: Keyword and value are required
         """
         data = request.get_json()
         if not data or 'keyword' not in data or 'value' not in data:
@@ -232,13 +288,70 @@ def create_app():
             return jsonify({'error': 'No PDF file uploaded'}), 400
 
         found, price_valid = validate_pdf(pdf_file_path, keyword, value)
-        return jsonify({'found': found, 'price_valid': price_valid}), 200 
+        return jsonify({'found': found, 'price_valid': price_valid}), 200
+
 
 
     @app.route('/api/csv', methods=['POST'])
     def csv_api_upload_and_validate():
         """
-        Upload a CSV and PDF file via an API endpoint and validate the PDF using the CSV file.
+        Upload a CSV and PDF file via an API endpoint and validate the PDF content using the CSV file.
+        ---
+        consumes:
+          - multipart/form-data
+        parameters:
+          - in: formData
+            name: csv
+            type: file
+            required: true
+            description: The CSV file containing keyword-value pairs for validation
+          - in: formData
+            name: pdf
+            type: file
+            required: true
+            description: The PDF file to be validated using the CSV data
+        responses:
+          200:
+            description: Files uploaded and validated successfully
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Files uploaded and validated successfully
+                results:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      keyword:
+                        type: string
+                        example: "example_keyword"
+                      value:
+                        type: string
+                        example: "example_value"
+                      found:
+                        type: boolean
+                        example: true
+                      price_valid:
+                        type: boolean
+                        example: false
+          400:
+            description: Both CSV and PDF files are required or invalid files
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: Both CSV and PDF files are required
+          500:
+            description: Internal server error
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: An error occurred
         """
         if 'csv' not in request.files or 'pdf' not in request.files:
             return jsonify({'error': 'Both CSV and PDF files are required'}), 400
